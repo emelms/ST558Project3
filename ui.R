@@ -71,7 +71,8 @@ dashboardPage(skin="green",
                       tabItem(tabName = "data",
                               fluidRow(
                                   column(3,
-                                         box(width=12,title="Add stuff about data"
+                                         box(width=12,title="Add stuff about data",
+                                             selectizeInput("columnInput", "Select Column:", selected = "all", choices = c("all","mpg","cylinders","displacement","horsepower","weight","acceleration","model year","car make","origin"))
                                          )
                                   ),
                                   #Show a plot of the prior    
