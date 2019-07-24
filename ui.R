@@ -71,15 +71,32 @@ dashboardPage(skin="green",
                       tabItem(tabName = "data",
                               fluidRow(
                                   column(3,
-                                         box(width=12,title="Add stuff about data",
-                                             selectizeInput("columnInput", "Select Column:", selected = "all", choices = c("all","mpg","cylinders","displacement","horsepower","weight","acceleration","model year","car make","origin"))
+                                         box(width=12,title="Understanding each predictor and it's relationship to MPG",
+                                             selectizeInput("columnDropDown", "Select a predictor:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                             checkboxInput("boxPlotCheckBox", h4("Add boxplot effect")),
+                                             checkboxInput("zoomCheckBox", h4("Zoom into plot (does not include boxplot effect)")),
+                                             checkboxInput("columnCheckBox", uiOutput("colorCheckBox")),
+                                             conditionalPanel(
+                                               condition = "input.columnCheckBox == true",
+                                               selectizeInput("colorDropDown", "Select a second predictor:", selected = "displacement", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin"))
+                                             )
                                          )
                                   ),
                                   #Show a plot of the prior    
                                   column(9,
                                          tabsetPanel(
                                              tabPanel("Analysis",
-                                                      h1("graphs")
+                                                      plotOutput("predictorScatterPlot",
+                                                                 brush = brushOpts(
+                                                                   id = "predict_brush",
+                                                                   resetOnNew = TRUE
+                                                                 )
+                                                      ),
+                                                      conditionalPanel(
+                                                        condition = "input.zoomCheckBox == true",
+                                                        plotOutput("zoomScatterPlot")
+                                                      ),
+                                                      plotOutput("predictorHistogram")
                                              ), #end tab panel
                                              tabPanel("View the data", 
                                                       h1("data table")
