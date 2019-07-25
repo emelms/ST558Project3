@@ -23,8 +23,8 @@ shinyServer(function(input, output, session) {
     output$colorCheckBox <- renderUI({
         paste0("Color code an additional predictor layer on top of ", toupper(input$columnDropDown))
     })
-
-    output$predictorScatterPlot <- renderPlot({
+    
+    predScatterPlot <- reactive({
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
                "displacement" = g <- ggplot(carData, aes(x = displacement, y = mpg)),
@@ -63,10 +63,9 @@ shinyServer(function(input, output, session) {
         } else {
             g + geom_jitter()
         }
-        
     })
     
-    output$predictorHistogram <- renderPlot({
+    predHistogram <- reactive({
         switch(input$columnDropDown,
                "cylinders" = g2 <- ggplot(carData, aes(x = cylinders)),
                "displacement" = g2 <- ggplot(carData, aes(x = displacement)),
@@ -80,8 +79,7 @@ shinyServer(function(input, output, session) {
         g2 + geom_bar()
     })
     
-    
-    output$zoomScatterPlot <- renderPlot({
+    predZoomScatterPlot <- reactive({
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
                "displacement" = g <- ggplot(carData, aes(x = displacement, y = mpg)),
@@ -108,7 +106,19 @@ shinyServer(function(input, output, session) {
         }
         
         g + geom_jitter() + coord_cartesian(xlim = ranges$x, ylim = ranges$y, expand = FALSE)
-        
+    })
+
+    output$predictorScatterPlot <- renderPlot({
+        predScatterPlot()
+    })
+    
+    output$predictorHistogram <- renderPlot({
+        predHistogram()
+    })
+    
+    
+    output$zoomScatterPlot <- renderPlot({
+        predZoomScatterPlot()
     })
     
     observe({
