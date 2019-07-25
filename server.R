@@ -17,8 +17,22 @@ shinyServer(function(input, output, session) {
     carData <- carData %>% mutate(X9=as.numeric(substr(carData$X8,1,1)))
     carData$X8 <- sapply(strsplit(sapply(strsplit(carData$X8, "\""), "[", 2), " "), "[", 1)
     colnames(carData) <- c("mpg","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")
+    carData <- filter(carData,horsepower != "?")
+    carData$horsepower <- as.double(carData$horsepower)
     
     ranges <- reactiveValues(x = NULL, y = NULL)
+    
+    getData <- reactive({
+        newData <- switch(input$filterDropDown,
+                          "cylinders" = filter(carData, cylinders >= input$filterRange[1] & cylinders <= input$filterRange[2]),
+                          "displacement" = filter(carData, displacement >= input$filterRange[1] & displacement <= input$filterRange[2]),
+                          "horsepower" = filter(carData, horsepower >= input$filterRange[1] & horsepower <= input$filterRange[2]),
+                          "weight" = filter(carData, weight >= input$filterRange[1] & weight <= input$filterRange[2]),
+                          "acceleration" = filter(carData, acceleration >= input$filterRange[1] & acceleration <= input$filterRange[2]),
+                          "model_year" = filter(carData, model_year >= input$filterRange[1] & model_year <= input$filterRange[2]),
+                          "origin" = filter(carData, origin >= input$filterRange[1] & origin <= input$filterRange[2])
+        )
+    })
     
     output$colorCheckBox <- renderUI({
         paste0("Color code an additional predictor layer on top of ", toupper(input$columnDropDown))
@@ -145,5 +159,13 @@ shinyServer(function(input, output, session) {
                    width = 16, height = 12)
         }
         )
+    
+    #server function generates a table based on the filtered values    
+    output$rawDataTable <- renderDataTable({
+        #grab the filtered data set
+        getData()
+    })
+    
+    observe({updateSliderInput(session, "filterRange", min = min(carData %>% select(input$filterDropDown)), max = max(carData %>% select(input$filterDropDown)), value = c(min(carData %>% select(input$filterDropDown)),max(carData %>% select(input$filterDropDown))))})
 
 })

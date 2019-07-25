@@ -103,7 +103,15 @@ dashboardPage(skin="green",
                                               )
                                      ), #end tab panel
                                      tabPanel("View the data", 
-                                              h1("data table")
+                                              column(3,
+                                                     selectizeInput("filterDropDown", "Select a predictor to filter on:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","origin")),
+                                                     sliderInput("filterRange", "Range:",
+                                                                 min = 1, max = 1000,
+                                                                 value = c(1,8))
+                                              ),
+                                              column(9,
+                                                     dataTableOutput("rawDataTable")
+                                              )
                                      )
                                    ) #end tab set
                             ) #end column
