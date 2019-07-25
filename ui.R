@@ -83,7 +83,9 @@ dashboardPage(skin="green",
                                                          conditionalPanel(
                                                            condition = "input.columnCheckBox == true",
                                                            selectizeInput("colorDropDown", "Select a second predictor:", selected = "displacement", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin"))
-                                                         )
+                                                         ),
+                                                         selectizeInput("pngPlotDropDown", "Select a plot to save:", selected = "ScatterPlot", choices = c("ScatterPlot","Zoom","Histogram")),
+                                                         downloadLink("downloadPlot", "Download")
                                                      )
                                               ),
                                               column(9,

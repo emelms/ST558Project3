@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
         paste0("Color code an additional predictor layer on top of ", toupper(input$columnDropDown))
     })
     
-    predScatterPlot <- reactive({
+    predScatterPlot <- function(){
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
                "displacement" = g <- ggplot(carData, aes(x = displacement, y = mpg)),
@@ -63,9 +63,9 @@ shinyServer(function(input, output, session) {
         } else {
             g + geom_jitter()
         }
-    })
+    }
     
-    predHistogram <- reactive({
+    predHistogram <- function(){
         switch(input$columnDropDown,
                "cylinders" = g2 <- ggplot(carData, aes(x = cylinders)),
                "displacement" = g2 <- ggplot(carData, aes(x = displacement)),
@@ -77,9 +77,9 @@ shinyServer(function(input, output, session) {
                "origin" = g2 <- ggplot(carData, aes(x = origin))
         )
         g2 + geom_bar()
-    })
+    }
     
-    predZoomScatterPlot <- reactive({
+    predZoomScatterPlot <- function(){
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
                "displacement" = g <- ggplot(carData, aes(x = displacement, y = mpg)),
@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
         }
         
         g + geom_jitter() + coord_cartesian(xlim = ranges$x, ylim = ranges$y, expand = FALSE)
-    })
+    }
 
     output$predictorScatterPlot <- renderPlot({
         predScatterPlot()
@@ -132,5 +132,18 @@ shinyServer(function(input, output, session) {
             ranges$y <- NULL
         }
     })
+    
+    output$downloadPlot <- downloadHandler(
+        filename = function(){
+            paste0(input$pngPlotDropDown,str_replace_all(Sys.time(),":","_"),".png")
+            },
+        content = function(file) {
+            ggsave(file, switch(input$pngPlotDropDown,
+                                "ScatterPlot" = predScatterPlot(),
+                                "Zoom" = predZoomScatterPlot(),
+                                "Histogram" = predHistogram()),
+                   width = 16, height = 12)
+        }
+        )
 
 })
