@@ -99,11 +99,7 @@ dashboardPage(skin="green",
                                                     condition = "input.zoomCheckBox == true",
                                                     plotOutput("zoomScatterPlot")
                                                   ),
-                                                  plotOutput("predictorHistogram"),
-                                                  conditionalPanel(
-                                                    condition = "input.columnDropDown != \"car_make\"",
-                                                    tableOutput("fiveNumberSummary")
-                                                  )
+                                                  plotOutput("predictorHistogram")
                                               )
                                      ), #end tab panel
                                      tabPanel("View the data", 

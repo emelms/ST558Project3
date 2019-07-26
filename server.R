@@ -121,10 +121,6 @@ shinyServer(function(input, output, session) {
         
         g + geom_jitter() + coord_cartesian(xlim = ranges$x, ylim = ranges$y, expand = FALSE)
     }
-    
-    output$fiveNumberSummary <- renderTable({
-        summary(carData$horsepower)
-    })
 
     output$predictorScatterPlot <- renderPlot({
         predScatterPlot()
