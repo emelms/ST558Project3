@@ -121,6 +121,10 @@ shinyServer(function(input, output, session) {
         
         g + geom_jitter() + coord_cartesian(xlim = ranges$x, ylim = ranges$y, expand = FALSE)
     }
+    
+    output$fiveNumberSummary <- renderTable({
+        summary(carData$horsepower)
+    })
 
     output$predictorScatterPlot <- renderPlot({
         predScatterPlot()
@@ -167,5 +171,14 @@ shinyServer(function(input, output, session) {
     })
     
     observe({updateSliderInput(session, "filterRange", min = min(carData %>% select(input$filterDropDown)), max = max(carData %>% select(input$filterDropDown)), value = c(min(carData %>% select(input$filterDropDown)),max(carData %>% select(input$filterDropDown))))})
+    
+    output$downloadData <- downloadHandler(
+        filename = function() {
+            paste0("CarMPG_FileretedOn_",input$filterDropDown,".csv")
+        },
+        content = function(file) {
+            write.csv(getData(), file, row.names = FALSE)
+        }
+    )
 
 })

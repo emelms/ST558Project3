@@ -85,7 +85,7 @@ dashboardPage(skin="green",
                                                            selectizeInput("colorDropDown", "Select a second predictor:", selected = "displacement", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin"))
                                                          ),
                                                          selectizeInput("pngPlotDropDown", "Select a plot to save:", selected = "ScatterPlot", choices = c("ScatterPlot","Zoom","Histogram")),
-                                                         downloadLink("downloadPlot", "Download")
+                                                         downloadButton("downloadPlot", "Download Plot")
                                                      )
                                               ),
                                               column(9,
@@ -99,7 +99,11 @@ dashboardPage(skin="green",
                                                     condition = "input.zoomCheckBox == true",
                                                     plotOutput("zoomScatterPlot")
                                                   ),
-                                                  plotOutput("predictorHistogram")
+                                                  plotOutput("predictorHistogram"),
+                                                  conditionalPanel(
+                                                    condition = "input.columnDropDown != \"car_make\"",
+                                                    tableOutput("fiveNumberSummary")
+                                                  )
                                               )
                                      ), #end tab panel
                                      tabPanel("View the data", 
@@ -107,7 +111,8 @@ dashboardPage(skin="green",
                                                      selectizeInput("filterDropDown", "Select a predictor to filter on:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","origin")),
                                                      sliderInput("filterRange", "Range:",
                                                                  min = 1, max = 1000,
-                                                                 value = c(1,8))
+                                                                 value = c(1,8)),
+                                                     downloadButton("downloadData", "Download Data")
                                               ),
                                               column(9,
                                                      dataTableOutput("rawDataTable")
