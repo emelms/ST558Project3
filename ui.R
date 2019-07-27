@@ -173,7 +173,7 @@ dashboardPage(skin="green",
                                      tabPanel("Tree Model",
                                               column(3,
                                                      box(width=12, title = "Create either a Regression Tree or Boosted Tree",
-                                                         selectizeInput("treeChooseDropDown", "Select a tree method:", selected = "Choose one!", choices = c("Choose one!","Regression Tree","Boosted")),
+                                                         selectizeInput("treeChooseDropDown", "Select a tree method:", selected = "Choose one!", choices = c("Choose one!","Regression Tree","Boosted Tree")),
                                                          conditionalPanel(
                                                            condition = "input.treeChooseDropDown == \"Regression Tree\"",
                                                            h3("You can build a tree with up to 3 predictors then press create!"),
@@ -188,11 +188,36 @@ dashboardPage(skin="green",
                                                            textInput("cpToInput","To:",value = "0.3"),
                                                            textInput("cpSeqInput","By sequence of:",value = "0.01"),
                                                            actionButton("createTreeButton", "Create tree")
-                                                         ) 
+                                                         ),
+                                                         conditionalPanel(
+                                                           condition = "input.treeChooseDropDown == \"Boosted Tree\"",
+                                                           h4("You can view and change the complexity of the boosted tree with the attribues below"),
+                                                           textInput("boostedFormulaInput","Formula:",value = "mpg ~ cylinders*displacement"),
+                                                           h4("Interaction Depth"),
+                                                           textInput("interactionFromInput","From:",value = "1"),
+                                                           textInput("interactionToInput","To:",value = "10"),
+                                                           sliderInput("nTreesRange", "Number of Trees:",
+                                                                       min = 10, max = 100, value = c(30,50)),
+                                                           textInput("minobsinnodeInput","Minobsinnode:",value = "20"),
+                                                           h4("Shrinkage Rate"),
+                                                           textInput("shrinkFromInput","From:",value = "0.01"),
+                                                           textInput("shrinkToInput","To:",value = "0.1"),
+                                                           textInput("shrinkSeqInput","By sequence of:",value = "0.5"),
+                                                           actionButton("boostedTreeButton", "Create boosted tree")
+                                                         )
                                                      )
                                               ),
                                               column(9,
-                                                     plotOutput("regressionTreePlot")
+                                                     conditionalPanel(
+                                                       condition = "input.treeChooseDropDown == \"Regression Tree\"",
+                                                       textOutput("custTreeModelText"),
+                                                       plotOutput("regressionTreePlot")
+                                                     ),
+                                                     conditionalPanel(
+                                                       condition = "input.treeChooseDropDown == \"Boosted Tree\"",
+                                                       textOutput("boostedTreeModelText"),
+                                                       plotOutput("boostedTreePlot")
+                                                     )
                                               )
                                      )
                                    )

@@ -271,8 +271,10 @@ shinyServer(function(input, output, session) {
         h4(paste0("Formula: ",getCreatedTreeFormula()))
     })
     
+    custTreeModelError = ""
+    
     createCustomTreeModel <- eventReactive(input$createTreeButton, {
-        #custModelError = ""
+        custTreeModelError = ""
         rpartGrid = expand.grid(.cp = seq(as.double(input$cpFromInput),as.double(input$cpToInput),as.double(input$cpSeqInput)))
         regTreeFit <- fitTree(getCreatedTreeFormula(),"rpart",rpartGrid)
     })
@@ -283,8 +285,37 @@ shinyServer(function(input, output, session) {
         return (TreeFit)
     }
     
+    observe({updateTextInput(session, "custTreeModelText", value = custTreeModelError)})
+    
     output$regressionTreePlot <- renderPlot({
-        plot(createCustomTreeModel())
+        tryCatch({
+            plot(createCustomTreeModel())
+        }, error=function(e) {
+            custTreeModelError = "Please input a valide tree formula"
+        }
+        )
+    })
+    
+    boostedTreeModelError = ""
+    
+    createBoostedTreeModel <- eventReactive(input$boostedTreeButton, {
+        boostedTreeModelError = ""
+        gbmGrid <- expand.grid(interaction.depth = as.double(input$interactionFromInput):as.double(input$interactionToInput),
+                               n.trees = seq(as.double(input$nTreesRange[1]), as.double(input$nTreesRange[2]), 10),
+                               n.minobsinnode = as.double(input$minobsinnodeInput),
+                               shrinkage = c(as.double(input$shrinkFromInput),as.double(input$shrinkToInput),as.double(input$shrinkToInput)))
+        boostedTreeFit <- fitTree(input$boostedFormulaInput,"gbm",gbmGrid)
+    })
+    
+    observe({updateTextInput(session, "boostedTreeModelText", value = boostedTreeModelError)})
+    
+    output$boostedTreePlot <- renderPlot({
+        tryCatch({
+            plot(createBoostedTreeModel())
+        }, error=function(e) {
+            boostedTreeModelError = "Please input a valide tree formula"
+        }
+        )
     })
 
 })
