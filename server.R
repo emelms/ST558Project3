@@ -13,6 +13,7 @@ library(ggiraphExtra)
 library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
+library(caret)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -260,6 +261,30 @@ shinyServer(function(input, output, session) {
         try(
             plot_models(createCompareModels())
         )
+    })
+    
+    getCreatedTreeFormula <- function(){
+        str_remove_all(paste0("mpg ~ ",input$tree1DropDown,input$tSymb1DropDown,input$tree2DropDown,input$tSymb2DropDown,input$tree3DropDown),"none")
+    }
+    
+    output$createdTreeFormula <- renderUI({
+        h4(paste0("Formula: ",getCreatedTreeFormula()))
+    })
+    
+    createCustomTreeModel <- eventReactive(input$createTreeButton, {
+        #custModelError = ""
+        rpartGrid = expand.grid(.cp = seq(as.double(input$cpFromInput),as.double(input$cpToInput),as.double(input$cpSeqInput)))
+        regTreeFit <- fitTree(getCreatedTreeFormula(),"rpart",rpartGrid)
+    })
+    
+    fitTree <- function(formulaInput,treeMethod,grid) {
+        controlTraining <- trainControl(method = "repeatedcv", number = 10)
+        TreeFit <- train(form = formula(formulaInput), data = carData, method = treeMethod, trControl=controlTraining , preProcess = c("center", "scale"), tuneGrid = grid)
+        return (TreeFit)
+    }
+    
+    output$regressionTreePlot <- renderPlot({
+        plot(createCustomTreeModel())
     })
 
 })

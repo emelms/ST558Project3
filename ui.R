@@ -169,6 +169,31 @@ dashboardPage(skin="green",
                                                        plotOutput("compareModelPlot")
                                                      )
                                               )
+                                     ),
+                                     tabPanel("Tree Model",
+                                              column(3,
+                                                     box(width=12, title = "Create either a Regression Tree or Boosted Tree",
+                                                         selectizeInput("treeChooseDropDown", "Select a tree method:", selected = "Choose one!", choices = c("Choose one!","Regression Tree","Boosted")),
+                                                         conditionalPanel(
+                                                           condition = "input.treeChooseDropDown == \"Regression Tree\"",
+                                                           h3("You can build a tree with up to 3 predictors then press create!"),
+                                                           selectizeInput("tree1DropDown", "Select predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                           selectizeInput("tSymb1DropDown", "Select symbol 1:", selected = " ", choices = c("","none","+",":","*")),
+                                                           selectizeInput("tree2DropDown", "Select predictor 2:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                           selectizeInput("tSymb2DropDown", "Select symbol 2:", selected = " ", choices = c("","none","+",":","*")),
+                                                           selectizeInput("tree3DropDown", "Select predictor 3:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                           uiOutput("createdTreeFormula"),
+                                                           h3("Complexity Parameter"),
+                                                           textInput("cpFromInput","From:",value = "0"),
+                                                           textInput("cpToInput","To:",value = "0.3"),
+                                                           textInput("cpSeqInput","By sequence of:",value = "0.01"),
+                                                           actionButton("createTreeButton", "Create tree")
+                                                         ) 
+                                                     )
+                                              ),
+                                              column(9,
+                                                     plotOutput("regressionTreePlot")
+                                              )
                                      )
                                    )
                             )
