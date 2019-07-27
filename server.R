@@ -176,5 +176,13 @@ shinyServer(function(input, output, session) {
             write.csv(getData(), file, row.names = FALSE)
         }
     )
+    
+    getCreatedFormula <- function(){
+        paste0("mpg ~ ",input$lm1DropDown,input$symb1DropDown,input$lm2DropDown,input$symb2DropDown,input$lm3DropDown,input$symb3DropDown,input$lm4DropDown)
+    }
+    
+    output$createdFormula <- renderUI({
+        h4(paste0("Formula: ",getCreatedFormula()))
+    })
 
 })

@@ -11,7 +11,8 @@ dashboardPage(skin="green",
               
               dashboardSidebar(sidebarMenu(
                 menuItem("About", tabName = "about", icon = icon("archive")),
-                menuItem("Data Exploration", tabName = "data", icon = icon("database"))
+                menuItem("Data Exploration", tabName = "data", icon = icon("database")),
+                menuItem("Modeling", tabName = "model", icon = icon("chart-line"))
               )),
               
               dashboardBody(
@@ -117,6 +118,46 @@ dashboardPage(skin="green",
                                    ) #end tab set
                             ) #end column
                           ) #end fluidrow
+                  ),
+                  tabItem(tabName = "model",
+                          fluidRow(
+                            column(12,
+                                   tabsetPanel(
+                                     tabPanel("Linear Model",
+                                              column(3,
+                                                box(width=12,title="Create a linear model of your choice",
+                                                    selectizeInput("lmChooseDropDown", "Either build a model or input your own formula:", selected = "Choose one!", choices = c("Choose one!","Build model","Input formula")),
+                                                    conditionalPanel(
+                                                      condition = "input.lmChooseDropDown == \"Build model\"",
+                                                      h3("You can build a model up to 4 predictors then press create!"),
+                                                      selectizeInput("lm1DropDown", "Select predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb1DropDown", "Select symbol 1:", selected = "", choices = c("","+",":","*")),
+                                                      selectizeInput("lm2DropDown", "Select predictor 2:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb2DropDown", "Select symbol 2:", selected = "", choices = c("","+",":","*")),
+                                                      selectizeInput("lm3DropDown", "Select predictor 3:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb3DropDown", "Select symbol 3:", selected = "", choices = c("","+",":","*")),
+                                                      selectizeInput("lm4DropDown", "Select predictor 4:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      uiOutput("createdFormula"),
+                                                      actionButton("createLmButton", "Create linear model")
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.lmChooseDropDown == \"Input formula\"",
+                                                      h3("You can compare upto 3 different linear models (must include response)"),
+                                                      textInput("formulaInput1","Formula 1:",value = "mpg ~ cylinders"),
+                                                      textInput("formulaInput2","Formula 2:", value = "mpg ~ weight"),
+                                                      textInput("formulaInput3","Formula 3:", value = ""),
+                                                      actionButton("compareLmsButton", "Compare linear models")
+                                                    )
+                                                )
+                                              ),
+                                              column(9,
+                                                h3("model output")
+                                              )
+                                     )
+                                   )
+                            )
+                          )
+                    
                   )
                 )
               )
