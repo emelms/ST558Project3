@@ -123,35 +123,51 @@ dashboardPage(skin="green",
                           fluidRow(
                             column(12,
                                    tabsetPanel(
-                                     tabPanel("Linear Model",
+                                     tabPanel("Generalized Linear Model",
                                               column(3,
-                                                box(width=12,title="Create a linear model of your choice",
-                                                    selectizeInput("lmChooseDropDown", "Either build a model or input your own formula:", selected = "Choose one!", choices = c("Choose one!","Build model","Input formula")),
+                                                box(width=12,title="Create a generalized linear model of your choice",
+                                                    selectizeInput("glmChooseDropDown", "Either build a model or input your own formula:", selected = "Choose one!", choices = c("Choose one!","Build model","Input formula")),
                                                     conditionalPanel(
-                                                      condition = "input.lmChooseDropDown == \"Build model\"",
+                                                      condition = "input.glmChooseDropDown == \"Build model\"",
                                                       h3("You can build a model up to 4 predictors then press create!"),
-                                                      selectizeInput("lm1DropDown", "Select predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
-                                                      selectizeInput("symb1DropDown", "Select symbol 1:", selected = "", choices = c("","+",":","*")),
-                                                      selectizeInput("lm2DropDown", "Select predictor 2:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
-                                                      selectizeInput("symb2DropDown", "Select symbol 2:", selected = "", choices = c("","+",":","*")),
-                                                      selectizeInput("lm3DropDown", "Select predictor 3:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
-                                                      selectizeInput("symb3DropDown", "Select symbol 3:", selected = "", choices = c("","+",":","*")),
-                                                      selectizeInput("lm4DropDown", "Select predictor 4:", selected = "", choices = c("","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("glm1DropDown", "Select predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb1DropDown", "Select symbol 1:", selected = " ", choices = c("","none","+",":","*")),
+                                                      selectizeInput("glm2DropDown", "Select predictor 2:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb2DropDown", "Select symbol 2:", selected = " ", choices = c("","none","+",":","*")),
+                                                      selectizeInput("glm3DropDown", "Select predictor 3:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("symb3DropDown", "Select symbol 3:", selected = " ", choices = c("","none","+",":","*")),
+                                                      selectizeInput("glm4DropDown", "Select predictor 4:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                      selectizeInput("familyDropDown", "Select a family:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
                                                       uiOutput("createdFormula"),
-                                                      actionButton("createLmButton", "Create linear model")
+                                                      actionButton("createGlmButton", "Create model")
                                                     ),
                                                     conditionalPanel(
-                                                      condition = "input.lmChooseDropDown == \"Input formula\"",
-                                                      h3("You can compare upto 3 different linear models (must include response)"),
+                                                      condition = "input.glmChooseDropDown == \"Input formula\"",
+                                                      h3("You can compare upto 3 different generalized linear models (must include response)"),
                                                       textInput("formulaInput1","Formula 1:",value = "mpg ~ cylinders"),
+                                                      selectizeInput("family1DropDown", "Select a family for formula 1:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
                                                       textInput("formulaInput2","Formula 2:", value = "mpg ~ weight"),
+                                                      selectizeInput("family2DropDown", "Select a family for formula 2:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
                                                       textInput("formulaInput3","Formula 3:", value = ""),
-                                                      actionButton("compareLmsButton", "Compare linear models")
+                                                      selectizeInput("family3DropDown", "Select a family for formula 3:", selected = "", choices = c("","binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
+                                                      actionButton("compareGlmsButton", "Compare models")
                                                     )
                                                 )
                                               ),
                                               column(9,
-                                                h3("model output")
+                                                     conditionalPanel(
+                                                       condition = "input.glmChooseDropDown == \"Build model\"",
+                                                       textOutput("custModelSummaryText"),
+                                                       htmlOutput("customModelSummary"),
+                                                       plotOutput("customModelPlot"),
+                                                       plotOutput("customLinearModelPlot")
+                                                     ),
+                                                     conditionalPanel(
+                                                       condition = "input.glmChooseDropDown == \"Input formula\"",
+                                                       textOutput("compareModelSummaryText"),
+                                                       htmlOutput("compareModelSummary"),
+                                                       plotOutput("compareModelPlot")
+                                                     )
                                               )
                                      )
                                    )

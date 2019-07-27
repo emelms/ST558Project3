@@ -9,6 +9,10 @@
 
 library(shiny)
 library(tidyverse)
+library(ggiraphExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -178,11 +182,85 @@ shinyServer(function(input, output, session) {
     )
     
     getCreatedFormula <- function(){
-        paste0("mpg ~ ",input$lm1DropDown,input$symb1DropDown,input$lm2DropDown,input$symb2DropDown,input$lm3DropDown,input$symb3DropDown,input$lm4DropDown)
+        str_remove_all(paste0("mpg ~ ",input$glm1DropDown,input$symb1DropDown,input$glm2DropDown,input$symb2DropDown,input$glm3DropDown,input$symb3DropDown,input$glm4DropDown),"none")
     }
     
     output$createdFormula <- renderUI({
         h4(paste0("Formula: ",getCreatedFormula()))
+    })
+    
+    buildGlmModel <- function(inputFormula, inputFamily) {
+        glm(formula = inputFormula, data = carData, family = inputFamily)
+    }
+    
+    custModelError = ""
+    
+    createCustomModel <- eventReactive(input$createGlmButton, {
+        custModelError = ""
+        buildGlmModel(getCreatedFormula(),input$familyDropDown)
+        glm(formula = getCreatedFormula(), data = carData, family = input$familyDropDown)
+    })
+    
+    output$customModelSummary <- renderUI({
+        tryCatch({
+            custModel <- tab_model(createCustomModel(), CSS = list(
+                css.depvarhead = 'color: red;',
+                css.centeralign = 'text-align: left;', 
+                css.firsttablecol = 'font-weight: bold;', 
+                css.summary = 'color: blue;'
+            ))
+            HTML(custModel$page.complete)
+        }, error=function(e) {
+            custModelError = "Please input a valide formula"
+        }
+        )
+    })
+    
+    observe({updateTextInput(session, "custModelSummaryText", value = custModelError)})
+    
+    output$customModelPlot <- renderPlot({
+        try(
+            plot_model(createCustomModel())
+        )
+    })
+    
+    output$customLinearModelPlot <- renderPlot({
+        try(
+            ggPredict(createCustomModel())
+        )
+    })
+    
+    compareModelError = ""
+    
+    createCompareModels <- eventReactive(input$compareGlmsButton, {
+        compareModelError = ""
+        model1 <- glm(formula = mpg ~ cyl, data = mtcars, family = gaussian)
+        model2 <- glm(formula = mpg ~ cyl*wt, data = mtcars, family = gaussian)
+        models <- list(model1, model2)
+        return (models)
+    })
+    
+    output$compareModelSummary <- renderUI({
+        tryCatch({
+            compareModels <- tab_model(createCompareModels(),   CSS = list(
+                css.depvarhead = 'color: red;',
+                css.centeralign = 'text-align: left;', 
+                css.firsttablecol = 'font-weight: bold;', 
+                css.summary = 'color: blue;'
+            ))
+            HTML(compareModels$page.complete)
+        }, error=function(e) {
+            compareModelError = "Please input a valide formula"
+        }
+        )
+    })
+    
+    observe({updateTextInput(session, "compareModelSummaryText", value = compareModelError)})
+    
+    output$compareModelPlot <- renderPlot({
+        try(
+            plot_models(createCompareModels())
+        )
     })
 
 })
