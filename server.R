@@ -189,15 +189,10 @@ shinyServer(function(input, output, session) {
         h4(paste0("Formula: ",getCreatedFormula()))
     })
     
-    buildGlmModel <- function(inputFormula, inputFamily) {
-        glm(formula = inputFormula, data = carData, family = inputFamily)
-    }
-    
     custModelError = ""
     
     createCustomModel <- eventReactive(input$createGlmButton, {
         custModelError = ""
-        buildGlmModel(getCreatedFormula(),input$familyDropDown)
         glm(formula = getCreatedFormula(), data = carData, family = input$familyDropDown)
     })
     
@@ -234,10 +229,14 @@ shinyServer(function(input, output, session) {
     
     createCompareModels <- eventReactive(input$compareGlmsButton, {
         compareModelError = ""
-        model1 <- glm(formula = mpg ~ cyl, data = mtcars, family = gaussian)
-        model2 <- glm(formula = mpg ~ cyl*wt, data = mtcars, family = gaussian)
-        models <- list(model1, model2)
-        return (models)
+        model1 <- glm(formula = input$formulaInput1, data = carData, family = input$family1DropDown)
+        model2 <- glm(formula = input$formulaInput2, data = carData, family = input$family2DropDown)
+        if(input$family3DropDown == "none") {
+            list(model1, model2)
+        } else {
+            model3 <- glm(formula = input$formulaInput3, data = carData, family = input$family3DropDown)
+            list(model1, model2, model3)
+        }
     })
     
     output$compareModelSummary <- renderUI({

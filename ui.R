@@ -149,7 +149,7 @@ dashboardPage(skin="green",
                                                       textInput("formulaInput2","Formula 2:", value = "mpg ~ weight"),
                                                       selectizeInput("family2DropDown", "Select a family for formula 2:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
                                                       textInput("formulaInput3","Formula 3:", value = ""),
-                                                      selectizeInput("family3DropDown", "Select a family for formula 3:", selected = "", choices = c("","binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
+                                                      selectizeInput("family3DropDown", "Select a family for formula 3:", selected = "none", choices = c("none","binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
                                                       actionButton("compareGlmsButton", "Compare models")
                                                     )
                                                 )
