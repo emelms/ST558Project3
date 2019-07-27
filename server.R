@@ -14,6 +14,7 @@ library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
 library(caret)
+library(Metrics)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -317,5 +318,36 @@ shinyServer(function(input, output, session) {
         }
         )
     })
+    
+    observeEvent(input$createPredictButton, {
+        performPrediction()
+    })
+    
+    getPredictionFormula <- function(){
+        if(input$predictChooseDropDown == "Build model"){
+            predictFormula = paste0("mpg ~ ",input$predict1DropDown,input$preSymb1DropDown,input$predict2DropDown,input$preSymb2DropDown,input$predict3DropDown)
+        } else {
+            predictFormula = input$predictFormulaInput
+        }
+        return(predictFormula)
+    }
+    
+    performPrediction <- function(){
+        train <- sample(1:nrow(carData), size = nrow(carData)*(1-(as.double(input$testAmountInput)/100)))
+        test <- dplyr::setdiff(1:nrow(carData), train)
+        carDataTrain <- carData[train, ]
+        carDataTest <- carData[test, ]
+        predictFormula <- getPredictionFormula()
+        currentModel <- glm(formula = predictFormula, data = carDataTrain, family = input$familyPredictDropDown)
+        currentPrediction <- predict(currentModel, newdata = dplyr::select(carDataTest, -mpg))
+        print(AIC(currentModel))
+        print(BIC(currentModel))
+        plot(currentPrediction)
+        points(carDataTrain$mpg, bg='blue', pch=21)
+        points(currentPrediction, bg='red', pch=21)
+        legend("topright", legend=c("Predicted Points", "Test Points"),
+               col=c("red", "blue"), pch=21, cex=1)
+    }
+    
 
 })

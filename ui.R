@@ -219,6 +219,33 @@ dashboardPage(skin="green",
                                                        plotOutput("boostedTreePlot")
                                                      )
                                               )
+                                     ),
+                                     tabPanel("Predictions",
+                                              column(3,
+                                                     box(width=12,title="Create a model of your choice and see how it performs at predictions!",
+                                                         selectizeInput("predictChooseDropDown", "Either build a model or input your own formula:", selected = "Build model", choices = c("Build model","Input formula")),
+                                                         conditionalPanel(
+                                                           condition = "input.predictChooseDropDown == \"Build model\"",
+                                                           h3("You can build a model up to 3 predictors"),
+                                                           selectizeInput("predict1DropDown", "Select predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                           selectizeInput("preSymb1DropDown", "Select symbol 1:", selected = " ", choices = c("","none","+",":","*")),
+                                                           selectizeInput("predict2DropDown", "Select predictor 2:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                           selectizeInput("preSymb2DropDown", "Select symbol 2:", selected = " ", choices = c("","none","+",":","*")),
+                                                           selectizeInput("predict3DropDown", "Select predictor 3:", selected = " ", choices = c("","none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin"))
+                                                         ),
+                                                         conditionalPanel(
+                                                           condition = "input.predictChooseDropDown == \"Input formula\"",
+                                                           textInput("predictFormulaInput","Formula:",value = "mpg ~ cylinders*displacement")
+                                                         ),
+                                                         selectizeInput("familyPredictDropDown", "Select a family:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
+                                                         textInput("testAmountInput","What percent of data do you want to use for testing:",value = "20"),
+                                                         actionButton("createPredictButton", "Create a prediction")
+                                                     )
+                                              ),
+                                              column(9,
+                                                h3("output")
+                                              )
+                                              
                                      )
                                    )
                             )
