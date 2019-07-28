@@ -46,7 +46,7 @@ dashboardPage(skin="green",
                                                             ")
                                               ),
                                               box(background="blue",width=12,
-                                                  h4("Modeling section has \"Supervised Learning\" and \"Unsupervised Learning\" tabs that allow the user to explore different models for predicting the MPG of an autombile. The final tab \"Prediction\" allows the user to create a custom model for predicting MPG. 
+                                                  h4("Modeling section has \"Generalized Linear Models\" and \"Tree Model\" tabs that allow the user to explore different models for predicting the MPG of an autombile. The final tab \"Prediction\" allows the user to create a custom model for predicting MPG. 
                                                               ")
                                               )
                                      ),
@@ -108,6 +108,7 @@ dashboardPage(skin="green",
                                               #output of the graphs from the server side that are dynamic as the user changes the predictor
                                               #also have a conditional statement for the zoom feature in case the user does not always want to view it
                                               column(9,
+                                                     h3("Scatter plot of the selected predictor:"),
                                                   plotOutput("predictorScatterPlot",
                                                              brush = brushOpts(
                                                                id = "predict_brush",
@@ -116,8 +117,10 @@ dashboardPage(skin="green",
                                                   ),
                                                   conditionalPanel(
                                                     condition = "input.zoomCheckBox == true",
+                                                    h3("Select a section on the graph above to zoom a specific area!"),
                                                     plotOutput("zoomScatterPlot")
                                                   ),
+                                                  h3("Numeric histogram to summarize the counts in the selected predictor:"),
                                                   plotOutput("predictorHistogram")
                                               )
                                      ), #end tab panel
@@ -184,14 +187,18 @@ dashboardPage(skin="green",
                                                      conditionalPanel(
                                                        condition = "input.glmChooseDropDown == \"Build model\"",
                                                        textOutput("custModelSummaryText"),
+                                                       h3("Model summary:"),
                                                        htmlOutput("customModelSummary"),
+                                                       h3("Model plots:"),
                                                        plotOutput("customModelPlot"),
                                                        plotOutput("customLinearModelPlot")
                                                      ),
                                                      conditionalPanel(
                                                        condition = "input.glmChooseDropDown == \"Input formula\"",
                                                        textOutput("compareModelSummaryText"),
+                                                       h3("Model summary:"),
                                                        htmlOutput("compareModelSummary"),
+                                                       h3("Model plot:"),
                                                        plotOutput("compareModelPlot")
                                                      )
                                               )
@@ -243,12 +250,15 @@ dashboardPage(skin="green",
                                                      conditionalPanel(
                                                        condition = "input.treeChooseDropDown == \"Regression Tree\"",
                                                        textOutput("custTreeModelText"),
+                                                       h3("Regression tree design and branches:"),
                                                        plotOutput("regressionFullTreePlot"),
+                                                       h3("CP complexity plot:"),
                                                        plotOutput("regressionTreePlot")
                                                      ),
                                                      conditionalPanel(
                                                        condition = "input.treeChooseDropDown == \"Boosted Tree\"",
                                                        textOutput("boostedTreeModelText"),
+                                                       h3("Boosted tree parameters:"),
                                                        plotOutput("boostedTreePlot")
                                                      )
                                               ) #end of column
@@ -278,6 +288,7 @@ dashboardPage(skin="green",
                                               #output plot of the prediction tests
                                               column(9,
                                                 textOutput("predictionModelText"),
+                                                h3("Predictive vs Actual points:"),
                                                 plotOutput("predictionPlot")
                                               )#end of column
                                               
