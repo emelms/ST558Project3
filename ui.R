@@ -238,12 +238,11 @@ dashboardPage(skin="green",
                                                            textInput("predictFormulaInput","Formula:",value = "mpg ~ cylinders*displacement")
                                                          ),
                                                          selectizeInput("familyPredictDropDown", "Select a family:", selected = "gaussian", choices = c("binomial","gaussian","Gamma","inverse.gaussian","poisson","quasi","quasibinomial","quasipoisson")),
-                                                         textInput("testAmountInput","What percent of data do you want to use for testing:",value = "20"),
-                                                         actionButton("createPredictButton", "Create a prediction")
+                                                         textInput("testAmountInput","What percent of data do you want to use for testing:",value = "20")
                                                      )
                                               ),
                                               column(9,
-                                                h3("output")
+                                                plotOutput("predictionPlot")
                                               )
                                               
                                      )

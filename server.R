@@ -319,10 +319,6 @@ shinyServer(function(input, output, session) {
         )
     })
     
-    observeEvent(input$createPredictButton, {
-        performPrediction()
-    })
-    
     getPredictionFormula <- function(){
         if(input$predictChooseDropDown == "Build model"){
             predictFormula = paste0("mpg ~ ",input$predict1DropDown,input$preSymb1DropDown,input$predict2DropDown,input$preSymb2DropDown,input$predict3DropDown)
@@ -349,5 +345,8 @@ shinyServer(function(input, output, session) {
                col=c("red", "blue"), pch=21, cex=1)
     }
     
+    output$predictionPlot <- renderPlot({
+        performPrediction()
+    })
 
 })
