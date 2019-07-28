@@ -242,6 +242,7 @@ dashboardPage(skin="green",
                                                      )
                                               ),
                                               column(9,
+                                                textOutput("predictionModelText"),
                                                 plotOutput("predictionPlot")
                                               )
                                               

@@ -14,7 +14,6 @@ library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
 library(caret)
-library(Metrics)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -319,6 +318,8 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    predictionModelError = ""
+    
     getPredictionFormula <- function(){
         if(input$predictChooseDropDown == "Build model"){
             predictFormula = paste0("mpg ~ ",input$predict1DropDown,input$preSymb1DropDown,input$predict2DropDown,input$preSymb2DropDown,input$predict3DropDown)
@@ -329,6 +330,7 @@ shinyServer(function(input, output, session) {
     }
     
     performPrediction <- function(){
+        predictionModelError = ""
         train <- sample(1:nrow(carData), size = nrow(carData)*(1-(as.double(input$testAmountInput)/100)))
         test <- dplyr::setdiff(1:nrow(carData), train)
         carDataTrain <- carData[train, ]
@@ -336,8 +338,6 @@ shinyServer(function(input, output, session) {
         predictFormula <- getPredictionFormula()
         currentModel <- glm(formula = predictFormula, data = carDataTrain, family = input$familyPredictDropDown)
         currentPrediction <- predict(currentModel, newdata = dplyr::select(carDataTest, -mpg))
-        print(AIC(currentModel))
-        print(BIC(currentModel))
         plot(currentPrediction)
         points(carDataTrain$mpg, bg='blue', pch=21)
         points(currentPrediction, bg='red', pch=21)
@@ -346,7 +346,13 @@ shinyServer(function(input, output, session) {
     }
     
     output$predictionPlot <- renderPlot({
-        performPrediction()
+        tryCatch({
+            performPrediction()
+        }, error = function(e) {
+            predictionModelError = "Please input a valide formula"
+        })
     })
+    
+    observe({updateTextInput(session, "predictionModelText", value = predictionModelError)})
 
 })
