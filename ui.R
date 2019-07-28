@@ -74,7 +74,16 @@ dashboardPage(skin="green",
                                                   h4("Note: For grouping methods we will split the car name field into make and remove model on the first space of each observation. Example: car make = \"Ford\" and car model = \"Mustang\""),
                                                   h4("CAR MAKE - brand name of the vehicle")
                                               )#end of box
-                                     )#end of tab panel
+                                     ), #end of tab panel
+                                     tabPanel("About the symbols",
+                                              box(background="blue",width=12,
+                                                  h4("In this application you can choose from a series of symbols that will format the equation of the predictors in the formula of each model in the model section. Below is a summary of what each symbol means:"),
+                                                  h4("+ - an additional interaction of a predictor with the resposne. Example: cylinder + displacement would create a formula of mpg ~ cylinder + displacement"),
+                                                  h4(": - an interaction between two predictors with the response. Example: cylinders:displacement would create a formula of mpg ~ cylinders*displacement"),
+                                                  h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of ", withMathJax(helpText('mpg ~ cylinders + $cylinders^2$')))),
+                                              box(background="red",width=12,
+                                                  h4("Note: MathJax was used to creat the squared symbol above!"))
+                                      )
                                    )#end of tabset panel
                             )#end of column
                           )#end of fluid row
