@@ -13,7 +13,7 @@ library(shinydashboard)
 
 #main dashboard
 dashboardPage(skin="green",
-              dashboardHeader(title="Project 3: Autmobile MPG Data Analysis",titleWidth=750),
+              dashboardHeader(title="Project 3: Automobile MPG Data Analysis",titleWidth=750),
               
               #side bar items found the left hand side that can be hidden by user's request
               dashboardSidebar(sidebarMenu(
@@ -147,6 +147,23 @@ dashboardPage(skin="green",
                                               #data table generated on the server side
                                               column(9,
                                                      dataTableOutput("rawDataTable")
+                                              )
+                                     ),
+                                     #tabPanel allows user to create a hierarchical dendogram customaizable to thier deisng
+                                     tabPanel("Dendogram",
+                                              column(3,
+                                                h3("You can create a customizable hierarchical dendogram by changing the order below!"),
+                                                h3("You can change up to 6 predictors in the dendogram:"),
+                                                selectizeInput("dendo1DropDown", "Select hierarchical predictor 1:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                selectizeInput("dendo2DropDown", "Select hierarchical predictor 2:", selected = "displacement", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                selectizeInput("dendo3DropDown", "Select hierarchical predictor 3:", selected = "horsepower", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                selectizeInput("dendo4DropDown", "Select hierarchical predictor 4:", selected = "none", choices = c("none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                selectizeInput("dendo5DropDown", "Select hierarchical predictor 5:", selected = "none", choices = c("none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
+                                                selectizeInput("dendo6DropDown", "Select hierarchical predictor 6:", selected = "none", choices = c("none","cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin"))
+                                              ),
+                                              column(9,
+                                                h3("Interactive Dendogram:"),
+                                                collapsibleTreeOutput("interactiveDendogram")
                                               )
                                      )
                                    ) #end tab set

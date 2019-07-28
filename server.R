@@ -18,6 +18,7 @@ library(sjlabelled)
 library(caret)
 library(rpart)
 library(rpart.plot)
+library(collapsibleTree)
 
 # Define server logic required to perform data anlaysis and charts/plots for the ui
 shinyServer(function(input, output, session) {
@@ -206,6 +207,18 @@ shinyServer(function(input, output, session) {
             write.csv(getData(), file, row.names = FALSE)
         }
     )
+
+    #function obtains the order for the interactive dendogram
+    getHierarchy <- function(){
+        hierarchyList <- c(input$dendo1DropDown,input$dendo2DropDown,input$dendo3DropDown,input$dendo4DropDown,input$dendo5DropDown,input$dendo6DropDown)
+        finalHierarchy <- hierarchyList[!hierarchyList == "none"]
+        return(finalHierarchy)
+    }
+    
+    #output of the interactive dendogram
+    output$interactiveDendogram <- renderCollapsibleTree({
+        collapsibleTree(carData, getHierarchy())
+    })
     
     #functinon used to create the formula the user builds for the GLM models
     getCreatedFormula <- function(){
