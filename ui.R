@@ -235,8 +235,10 @@ dashboardPage(skin="green",
                                                            textInput("shrinkSeqInput","By sequence of:",value = "0.5"),
                                                            actionButton("boostedTreeButton", "Create boosted tree")
                                                          )
-                                                     )
-                                              ),
+                                                     )#end of box
+                                              ), #end of column
+                                              #output plots of the user's formulas and selected tree
+                                              #conditional statements linked to if the user wants a regression or boosted tree
                                               column(9,
                                                      conditionalPanel(
                                                        condition = "input.treeChooseDropDown == \"Regression Tree\"",
@@ -249,8 +251,9 @@ dashboardPage(skin="green",
                                                        textOutput("boostedTreeModelText"),
                                                        plotOutput("boostedTreePlot")
                                                      )
-                                              )
+                                              ) #end of column
                                      ),
+                                     #final tab allows the user to input a GLM formula and see how it plots agains a test set
                                      tabPanel("Predictions",
                                               column(3,
                                                      box(width=12,title="Create a model of your choice and see how it performs at predictions!",
@@ -272,17 +275,18 @@ dashboardPage(skin="green",
                                                          textInput("testAmountInput","What percent of data do you want to use for testing:",value = "20")
                                                      )
                                               ),
+                                              #output plot of the prediction tests
                                               column(9,
                                                 textOutput("predictionModelText"),
                                                 plotOutput("predictionPlot")
-                                              )
+                                              )#end of column
                                               
-                                     )
-                                   )
-                            )
-                          )
+                                     )#end of tab panel
+                                   )#end of tabset panel
+                            )#end of column
+                          )#end of fluid row
                     
-                  )
-                )
-              )
-)
+                  )#end of tab item
+                )#end of tabitems
+              )#end of dashboard body
+)#end of dashboard
