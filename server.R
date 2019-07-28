@@ -1,10 +1,12 @@
 #
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
+#   Author: Evan Elms
+#   Date: 7/16/2019
+#   Description: server side of application used to analyze car data and find which predictors best match with MPG
+#       The server side performs all the calculations and transformations provided by the user and renders 
+#       all plots and text for the following tabs:
+#         1. Intro - none transformations on this tab
+#         2. data analysis - graphs used to compare each predictor to the MPG along with viewing the raw data
+#         3. Modeling - creates and calculates all models in the tab
 #
 
 library(shiny)
@@ -17,9 +19,10 @@ library(caret)
 library(rpart)
 library(rpart.plot)
 
-# Define server logic required to draw a histogram
+# Define server logic required to perform data anlaysis and charts/plots for the ui
 shinyServer(function(input, output, session) {
     
+    #car data is read into R and transformed according to pre-defined conditions
     carData <- read_fwf(file="auto-mpg.data",col_positions = fwf_empty("auto-mpg.data"))
     carData <- carData %>% mutate(X9=as.numeric(substr(carData$X8,1,1)))
     carData$X8 <- sapply(strsplit(sapply(strsplit(carData$X8, "\""), "[", 2), " "), "[", 1)
@@ -27,8 +30,11 @@ shinyServer(function(input, output, session) {
     carData <- filter(carData,horsepower != "?")
     carData$horsepower <- as.double(carData$horsepower)
     
+    #range used for the zoom function, is set to null as not being used yet but must be instantiated
     ranges <- reactiveValues(x = NULL, y = NULL)
     
+    #get data returns filtered data used in the view data tab
+    #used a switch statement as the filter was not happy with the input$filter values
     getData <- reactive({
         newData <- switch(input$filterDropDown,
                           "cylinders" = filter(carData, cylinders >= input$filterRange[1] & cylinders <= input$filterRange[2]),
@@ -41,10 +47,13 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    #dynamic UI piece used to inform the user what color layer they will be adding to the existing predictor
     output$colorCheckBox <- renderUI({
         paste0("Color code an additional predictor layer on top of ", toupper(input$columnDropDown))
     })
     
+    #scatter plot function used to build the scatter plot based on the user's inputs
+    #again had to use a series of switch cases as ggplot did not like the input methods
     predScatterPlot <- function(){
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
@@ -56,6 +65,7 @@ shinyServer(function(input, output, session) {
                "car_make" = g <- ggplot(carData, aes(x = car_make, y = mpg)),
                "origin" = g <- ggplot(carData, aes(x = origin, y = mpg))
         )
+        #if the user wants to add a color layer for an additional predictor, the if statement will handle it
         if(input$columnCheckBox){
             switch(input$colorDropDown,
                    "cylinders" = g <- g + geom_point(aes(col = cylinders)),
@@ -70,7 +80,7 @@ shinyServer(function(input, output, session) {
         } else {
             g <- g + geom_point()
         }
-        
+        #if the user wants a box plot on top of the existing graph
         if(input$boxPlotCheckBox){
             switch(input$columnDropDown,
                    "cylinders" = g + geom_boxplot(aes(group = cut_width(cylinders, 1))) + geom_jitter(),
