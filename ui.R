@@ -39,10 +39,10 @@ dashboardPage(skin="green",
                                                             ")
                                               ),
                                               box(background="green",width=12,
-                                                  h4("About section gives an overview of the dataset and column under the \"About Data\" and \"About Columns\" tabs."                                                              )
+                                                  h4("About section gives an overview of the dataset and column under the \"About the data\" and \"About the columns\" tabs."                                                              )
                                               ),
                                               box(background="green",width=12,
-                                                  h4("Data Exploration section allows for data analysis and summaries under the \"Data Summaries\" and \"Raw Data\" tabs. On the left hand side, the user can filter the type of data being displayed. In this section the user can also export any of the graphs or filtered data set. 
+                                                  h4("Data Exploration section allows for data analysis and summaries under the \"Data Summaries\", \"Raw Data\", \"Dendogram\" tabs. On the left hand side, the user can filter the type of data being displayed. In this section the user can also export any of the graphs or filtered data set. 
                                                             ")
                                               ),
                                               box(background="green",width=12,
