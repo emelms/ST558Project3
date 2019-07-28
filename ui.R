@@ -39,7 +39,7 @@ dashboardPage(skin="green",
                                                             ")
                                               ),
                                               box(background="green",width=12,
-                                                  h4("About section gives an overview of the dataset and column under the \"About the data\" and \"About the columns\" tabs."                                                              )
+                                                  h4("About section gives an overview of the dataset and columns under the \"About the data\" and \"About the columns\" tabs."                                                              )
                                               ),
                                               box(background="green",width=12,
                                                   h4("Data Exploration section allows for data analysis and summaries under the \"Data Summaries\", \"Raw Data\", \"Dendogram\" tabs. On the left hand side, the user can filter the type of data being displayed. In this section the user can also export any of the graphs or filtered data set. 
@@ -53,7 +53,7 @@ dashboardPage(skin="green",
                                      #description about where the data was located and the history of it
                                      tabPanel("About the data",
                                               box(background="green",width=12,
-                                                  h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 that focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predicors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were 8 unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University.")
+                                                  h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 and focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predictors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were eight unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University.")
                                               )
                                      ),
                                      #column descriptions and tranformation
@@ -67,7 +67,7 @@ dashboardPage(skin="green",
                                                   h4("WEIGHT - how heavy is the vehicle"),
                                                   h4("ACCELERATION - how quickly can the vehicle progress from a still position"),
                                                   h4("MODEL YEAR - year the vehicle was made"),
-                                                  h4("ORIGIN - location where the car was engineered; 1 = American, 2 = German, 3 = Japanese"),
+                                                  h4("ORIGIN - location where the car was engineered; 1 = America, 2 = Germany, 3 = Japan"),
                                                   h4("CAR NAME - the model name and title of each vehicle")
                                               ),
                                               box(background="red",width=12,
@@ -84,7 +84,7 @@ dashboardPage(skin="green",
                                                   h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of ", withMathJax(helpText('$$mpg \\sim cylinders + cylinders^2$$')))
                                               ),
                                               box(background="red",width=12,
-                                                  h4("Note: MathJax was used to creat the squared symbol above!"))
+                                                  h4("Note: MathJax was used to create the squared symbol above!"))
                                       )
                                    )#end of tabset panel
                             )#end of column
@@ -102,7 +102,7 @@ dashboardPage(skin="green",
                                      #based on the user's input to add more depth by providing a 2 predictor
                                      tabPanel("Analysis",
                                               column(3,
-                                                     box(width=12,title="Understanding each predictor and it's relationship to MPG",
+                                                     box(width=12,title="Understanding each predictor and its relationship to MPG",
                                                          selectizeInput("columnDropDown", "Select a predictor:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","car_make","origin")),
                                                          checkboxInput("boxPlotCheckBox", h4("Add boxplot effect")),
                                                          checkboxInput("zoomCheckBox", h4("Zoom into plot (does not include boxplot effect)")),
