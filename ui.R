@@ -35,7 +35,7 @@ dashboardPage(skin="green",
                                      tabPanel("About this app!",
                                               #divided the description into 4 boxes so the text didn't look endless
                                               box(background="blue",width=12,
-                                                  h4("This application is used to perform data analysis and statistical learning methods on the automobile MPG data set provided by UC Irvine Machine Learning <https://archive.ics.uci.edu/ml/datasets/Auto+MPG>. There are three sections to this application with each section having a series of tabs. 
+                                                  h4("This application is used to perform data analysis and statistical learning methods on the automobile MPG data set provided by ",a("UC Irvine Machine Learning", href="https://archive.ics.uci.edu/ml/datasets/Auto+MPG"), ". There are three sections to this application with each section having a series of tabs. 
                                                             ")
                                               ),
                                               box(background="blue",width=12,
@@ -53,8 +53,7 @@ dashboardPage(skin="green",
                                      #description about where the data was located and the history of it
                                      tabPanel("About the data",
                                               box(background="blue",width=12,
-                                                  h4("The data set auto-mpg <https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/> is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 that focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predicors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were 8 unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University. 
-                                                          ")
+                                                  h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 that focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predicors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were 8 unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University.")
                                               )
                                      ),
                                      #column descriptions and tranformation
