@@ -53,7 +53,7 @@ dashboardPage(skin="green",
                                      #description about where the data was located and the history of it
                                      tabPanel("About the data",
                                               box(background="green",width=12,
-                                                  h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 and focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predictors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were eight unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University.")
+                                                  h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 and focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predictors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were eight unknown values in the MPG column so for our application will be using the modified version that is maintained by ",em("Carnegie Mellon University."))
                                               )
                                      ),
                                      #column descriptions and tranformation
@@ -127,7 +127,7 @@ dashboardPage(skin="green",
                                                   ),
                                                   conditionalPanel(
                                                     condition = "input.zoomCheckBox == true",
-                                                    h3("Select a section on the graph above to zoom a specific area!"),
+                                                    h2("Select a section on the graph above to zoom a specific area!", style = "color:red;"),
                                                     plotOutput("zoomScatterPlot")
                                                   ),
                                                   h3("Numeric histogram to summarize the counts in the selected predictor:"),
@@ -148,7 +148,7 @@ dashboardPage(skin="green",
                                               column(9,
                                                      dataTableOutput("rawDataTable")
                                               )
-                                     ),
+                                     ), # end of tab panel
                                      #tabPanel allows user to create a hierarchical dendogram customaizable to thier deisng
                                      tabPanel("Dendogram",
                                               column(3,
@@ -165,7 +165,7 @@ dashboardPage(skin="green",
                                                 h3("Interactive Dendogram:"),
                                                 collapsibleTreeOutput("interactiveDendogram")
                                               )
-                                     )
+                                     ) #end of tab panel
                                    ) #end tab set
                             ) #end column
                           ) #end fluidrow
@@ -216,7 +216,7 @@ dashboardPage(skin="green",
                                                        textOutput("custModelSummaryText"),
                                                        h3("Model summary:"),
                                                        htmlOutput("customModelSummary"),
-                                                       h3("Model plots:"),
+                                                       h3("Model plots (may take a moment to render based on formula complexity):"),
                                                        plotOutput("customModelPlot"),
                                                        plotOutput("customLinearModelPlot")
                                                      ),
@@ -225,7 +225,7 @@ dashboardPage(skin="green",
                                                        textOutput("compareModelSummaryText"),
                                                        h3("Model summary:"),
                                                        htmlOutput("compareModelSummary"),
-                                                       h3("Model plot:"),
+                                                       h3("Model plot (may take a moment to render based on formula complexity):"),
                                                        plotOutput("compareModelPlot")
                                                      )
                                               )
@@ -285,7 +285,7 @@ dashboardPage(skin="green",
                                                      conditionalPanel(
                                                        condition = "input.treeChooseDropDown == \"Boosted Tree\"",
                                                        textOutput("boostedTreeModelText"),
-                                                       h3("Boosted tree parameters:"),
+                                                       h3("Boosted tree parameters (may take a moment to render based on formula complexity):"),
                                                        plotOutput("boostedTreePlot")
                                                      )
                                               ) #end of column
