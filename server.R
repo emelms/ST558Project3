@@ -14,6 +14,8 @@ library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
 library(caret)
+library(rpart)
+library(rpart.plot)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -286,6 +288,13 @@ shinyServer(function(input, output, session) {
     }
     
     observe({updateTextInput(session, "custTreeModelText", value = custTreeModelError)})
+    
+    output$regressionFullTreePlot <- renderPlot({
+        tryCatch({
+            tree <- rpart(formula(getCreatedTreeFormula()), data=carData, cp=as.double(input$cpSetInput))
+            rpart.plot(tree, box.palette="RdBu", shadow.col="gray", nn=TRUE)
+        })
+    })
     
     output$regressionTreePlot <- renderPlot({
         tryCatch({

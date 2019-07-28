@@ -1,28 +1,39 @@
 #
 #   Author: Evan Elms
 #   Date: 7/16/2019
+#   Description: Application used to analyze car data and determine which predictors work best in calculating the
+#     the miles per galon of a car. There are 3 tabs to this application
+#         1. Intro - discussing the app and data
+#         2. data analysis - tools that allow the user to explore the data through graphs and the raw data itself
+#         3. Modeling - allows the user to fit GLMs and 2 tree models to the data through their own formulas
 #
 
 library(shiny)
 library(shinydashboard)
 
+#main dashboard
 dashboardPage(skin="green",
               dashboardHeader(title="Project 3: Autmobile MPG Data Analysis",titleWidth=750),
               
+              #side bar items found the left hand side that can be hidden by user's request
               dashboardSidebar(sidebarMenu(
                 menuItem("About", tabName = "about", icon = icon("archive")),
                 menuItem("Data Exploration", tabName = "data", icon = icon("database")),
                 menuItem("Modeling", tabName = "model", icon = icon("chart-line"))
               )),
               
+              #main body where the user will interact with the tools and data
               dashboardBody(
+                #a list of all the tab items found the side bar
                 tabItems(
+                  #first tab item is describing the application and data
                   tabItem(tabName = "about",
                           fluidRow(
                             withMathJax(),
                             column(12,
                                    tabsetPanel(
                                      tabPanel("About this app!",
+                                              #divided the description into 4 boxes so the text didn't look endless
                                               box(background="blue",width=12,
                                                   h4("This application is used to perform data analysis and statistical learning methods on the automobile MPG data set provided by UC Irvine Machine Learning <https://archive.ics.uci.edu/ml/datasets/Auto+MPG>. There are three sections to this application with each section having a series of tabs. 
                                                             ")
@@ -39,12 +50,14 @@ dashboardPage(skin="green",
                                                               ")
                                               )
                                      ),
+                                     #description about where the data was located and the history of it
                                      tabPanel("About the data",
                                               box(background="blue",width=12,
                                                   h4("The data set auto-mpg <https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/> is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 that focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predicors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were 8 unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University. 
                                                           ")
                                               )
                                      ),
+                                     #column descriptions and tranformation
                                      tabPanel("About the columns",
                                               box(background="blue",width=12,
                                                   h4("Below is a description of each column in the data set:"),
@@ -59,21 +72,24 @@ dashboardPage(skin="green",
                                                   h4("CAR NAME - the model name and title of each vehicle")
                                               ),
                                               box(background="red",width=12,
-                                                  h4("Note: For grouping methods we will split the car name field into make and model on the first space of each observation. Example: car make = \"Ford\" and car model = \"Mustang\""),
-                                                  h4("CAR MAKE - brand name of the vehicle"),
-                                                  h4("CARE MODEL - model of the vehicle")
-                                              )
-                                     )
-                                   )
-                            )
-                          )
-                  ),
+                                                  h4("Note: For grouping methods we will split the car name field into make and remove model on the first space of each observation. Example: car make = \"Ford\" and car model = \"Mustang\""),
+                                                  h4("CAR MAKE - brand name of the vehicle")
+                                              )#end of box
+                                     )#end of tab panel
+                                   )#end of tabset panel
+                            )#end of column
+                          )#end of fluid row
+                  ), #end of tab item
                   
+                  #data tab focuses all on data analysis, giving the user to see the relationships between the response and predictor
+                  #while also having the ability to view the raw data
                   tabItem(tabName = "data",
                           fluidRow(
-                            #Show a plot of the prior    
                             column(12,
                                    tabsetPanel(
+                                     #first tab panel is focused on showing the user each predictor through a series of graphs
+                                     #user can choose from a set of options to modify the graphs, includes a conditional panel
+                                     #based on the user's input to add more depth by providing a 2 predictor
                                      tabPanel("Analysis",
                                               column(3,
                                                      box(width=12,title="Understanding each predictor and it's relationship to MPG",
@@ -89,6 +105,8 @@ dashboardPage(skin="green",
                                                          downloadButton("downloadPlot", "Download Plot")
                                                      )
                                               ),
+                                              #output of the graphs from the server side that are dynamic as the user changes the predictor
+                                              #also have a conditional statement for the zoom feature in case the user does not always want to view it
                                               column(9,
                                                   plotOutput("predictorScatterPlot",
                                                              brush = brushOpts(
@@ -103,6 +121,8 @@ dashboardPage(skin="green",
                                                   plotOutput("predictorHistogram")
                                               )
                                      ), #end tab panel
+                                     #tab is focused on allowing the user to see the raw data and filter it based on a predictor
+                                     #the slider is dynamically changing based on the range of the selected predictor
                                      tabPanel("View the data", 
                                               column(3,
                                                      selectizeInput("filterDropDown", "Select a predictor to filter on:", selected = "cylinders", choices = c("cylinders","displacement","horsepower","weight","acceleration","model_year","origin")),
@@ -111,6 +131,7 @@ dashboardPage(skin="green",
                                                                  value = c(1,8)),
                                                      downloadButton("downloadData", "Download Data")
                                               ),
+                                              #data table generated on the server side
                                               column(9,
                                                      dataTableOutput("rawDataTable")
                                               )
@@ -119,10 +140,14 @@ dashboardPage(skin="green",
                             ) #end column
                           ) #end fluidrow
                   ),
+                  #model tab provides the user the tools to fit different GLM and tree models to the data base on their analysis in the above tab
                   tabItem(tabName = "model",
                           fluidRow(
                             column(12,
                                    tabsetPanel(
+                                     #Tab allows the user to customize a formula and fit it to any GLM allowed in the glm function
+                                     #There is a try catch on the server side in case the user inputs an invalid formula, in which they will be notified
+                                     #There are 2 conditional panesl based on if the user want's to build the formula or input it
                                      tabPanel("Generalized Linear Model",
                                               column(3,
                                                 box(width=12,title="Create a generalized linear model of your choice",
@@ -154,6 +179,7 @@ dashboardPage(skin="green",
                                                     )
                                                 )
                                               ),
+                                              #output of the glm will vary based on if the user is building the formula or inputting it
                                               column(9,
                                                      conditionalPanel(
                                                        condition = "input.glmChooseDropDown == \"Build model\"",
@@ -170,6 +196,9 @@ dashboardPage(skin="green",
                                                      )
                                               )
                                      ),
+                                     #tree panel allows the user to either fit a regression tree or boosted tree
+                                     #Attempted to fit other trees but had challenges when creating plots to show the user 
+                                     #how their changes affected the tree and it's prediction pattern
                                      tabPanel("Tree Model",
                                               column(3,
                                                      box(width=12, title = "Create either a Regression Tree or Boosted Tree",
@@ -187,6 +216,7 @@ dashboardPage(skin="green",
                                                            textInput("cpFromInput","From:",value = "0"),
                                                            textInput("cpToInput","To:",value = "0.3"),
                                                            textInput("cpSeqInput","By sequence of:",value = "0.01"),
+                                                           textInput("cpSetInput","Set final cp to:",value = "0.2"),
                                                            actionButton("createTreeButton", "Create tree")
                                                          ),
                                                          conditionalPanel(
@@ -211,6 +241,7 @@ dashboardPage(skin="green",
                                                      conditionalPanel(
                                                        condition = "input.treeChooseDropDown == \"Regression Tree\"",
                                                        textOutput("custTreeModelText"),
+                                                       plotOutput("regressionFullTreePlot"),
                                                        plotOutput("regressionTreePlot")
                                                      ),
                                                      conditionalPanel(
