@@ -80,7 +80,7 @@ shinyServer(function(input, output, session) {
         } else {
             g <- g + geom_point()
         }
-        #if the user wants a box plot on top of the existing graph
+        #if the user wants a box plot on top of the existing plot
         if(input$boxPlotCheckBox){
             switch(input$columnDropDown,
                    "cylinders" = g + geom_boxplot(aes(group = cut_width(cylinders, 1))) + geom_jitter(),
@@ -96,6 +96,9 @@ shinyServer(function(input, output, session) {
         }
     }
     
+    #numeric count histogram used to show the user the categories in each predictor
+    #and how many are in each category, also used a switch statement again 
+    #due to challenges with input commands
     predHistogram <- function(){
         switch(input$columnDropDown,
                "cylinders" = g2 <- ggplot(carData, aes(x = cylinders)),
@@ -110,6 +113,8 @@ shinyServer(function(input, output, session) {
         g2 + geom_bar()
     }
     
+    #zoom scatter plat created when the user highlights a certain area in the main graph
+    #managed by a series of switch cases and if statements to handle the multiple user inputs
     predZoomScatterPlot <- function(){
         switch(input$columnDropDown,
                "cylinders" = g <- ggplot(carData, aes(x = cylinders, y = mpg)),
@@ -139,19 +144,22 @@ shinyServer(function(input, output, session) {
         g + geom_jitter() + coord_cartesian(xlim = ranges$x, ylim = ranges$y, expand = FALSE)
     }
 
+    #render function used to send the plot back to the UI
     output$predictorScatterPlot <- renderPlot({
         predScatterPlot()
     })
     
+    #render function used to send the plot back to the UI
     output$predictorHistogram <- renderPlot({
         predHistogram()
     })
     
-    
+    #render function used to send the plot back to the UI
     output$zoomScatterPlot <- renderPlot({
         predZoomScatterPlot()
     })
     
+    #observe function used to adjust the x and y coordinates as the user changes the zoom
     observe({
         brush <- input$predict_brush
         if (!is.null(brush)) {
@@ -164,6 +172,8 @@ shinyServer(function(input, output, session) {
         }
     })
     
+    #download plot function allows the user to select which plot they want to save 
+    #and then save the final piece to their local machine
     output$downloadPlot <- downloadHandler(
         filename = function(){
             paste0(input$pngPlotDropDown,str_replace_all(Sys.time(),":","_"),".png")
@@ -183,8 +193,11 @@ shinyServer(function(input, output, session) {
         getData()
     })
     
+    #observe function is used update the slider on the filter page based
+    #on which predictor the user is filtering on
     observe({updateSliderInput(session, "filterRange", min = min(carData %>% select(input$filterDropDown)), max = max(carData %>% select(input$filterDropDown)), value = c(min(carData %>% select(input$filterDropDown)),max(carData %>% select(input$filterDropDown))))})
     
+    #download data function allows the user to save the filtered data
     output$downloadData <- downloadHandler(
         filename = function() {
             paste0("CarMPG_FileretedOn_",input$filterDropDown,".csv")
@@ -194,21 +207,28 @@ shinyServer(function(input, output, session) {
         }
     )
     
+    #functinon used to create the formula the user builds for the GLM models
     getCreatedFormula <- function(){
         str_remove_all(paste0("mpg ~ ",input$glm1DropDown,input$symb1DropDown,input$glm2DropDown,input$symb2DropDown,input$glm3DropDown,input$symb3DropDown,input$glm4DropDown),"none")
     }
     
+    #UI text used to show the user their current full formula
     output$createdFormula <- renderUI({
         h4(paste0("Formula: ",getCreatedFormula()))
     })
     
+    #error string used to inform the user if their formula is not correct
     custModelError = ""
     
+    #event button based on when the user clicks the create glm
+    #used to create the glm model
     createCustomModel <- eventReactive(input$createGlmButton, {
         custModelError = ""
         glm(formula = getCreatedFormula(), data = carData, family = input$familyDropDown)
     })
     
+    #output on how well the custom model performed in explaining the variance in MPG
+    #if the user inputs a bad formula, then the trycatch will inform them
     output$customModelSummary <- renderUI({
         tryCatch({
             custModel <- tab_model(createCustomModel(), CSS = list(
@@ -224,22 +244,28 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    #observe function used to update the user if their formula is bad
     observe({updateTextInput(session, "custModelSummaryText", value = custModelError)})
     
+    #plot function used to return the final plot created by the user to the UI
     output$customModelPlot <- renderPlot({
         try(
             plot_model(createCustomModel())
         )
     })
     
+    #a linear plot that is sometimes displayed to the user if their model if linear
     output$customLinearModelPlot <- renderPlot({
         try(
             ggPredict(createCustomModel())
         )
     })
     
+    #error sting used to inform the user if their formula is bad
     compareModelError = ""
     
+    #event button that generates a model when the user clicks create
+    #can build up to 3 models and uses an if else statement depending on the user
     createCompareModels <- eventReactive(input$compareGlmsButton, {
         compareModelError = ""
         model1 <- glm(formula = input$formulaInput1, data = carData, family = input$family1DropDown)
@@ -252,6 +278,8 @@ shinyServer(function(input, output, session) {
         }
     })
     
+    #UI piece displays how the models did in comparison to each other
+    #if any of the formulas are bad then the user is informed in the trycatch
     output$compareModelSummary <- renderUI({
         tryCatch({
             compareModels <- tab_model(createCompareModels(),   CSS = list(
@@ -267,38 +295,47 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    #observe function used to update the user if their formula was bad
     observe({updateTextInput(session, "compareModelSummaryText", value = compareModelError)})
     
+    #plot all the models in their estimates to compare and show the user their differences
     output$compareModelPlot <- renderPlot({
         try(
             plot_models(createCompareModels())
         )
     })
     
+    #function obtains the formula for the tree models that the user built
     getCreatedTreeFormula <- function(){
         str_remove_all(paste0("mpg ~ ",input$tree1DropDown,input$tSymb1DropDown,input$tree2DropDown,input$tSymb2DropDown,input$tree3DropDown),"none")
     }
     
+    #UI output text shows the user what their overall formula appears like
     output$createdTreeFormula <- renderUI({
         h4(paste0("Formula: ",getCreatedTreeFormula()))
     })
     
+    #string used to inform the user if their formula is bad
     custTreeModelError = ""
     
+    #event button that beings creating a tree model based on the users inputs
     createCustomTreeModel <- eventReactive(input$createTreeButton, {
         custTreeModelError = ""
         rpartGrid = expand.grid(.cp = seq(as.double(input$cpFromInput),as.double(input$cpToInput),as.double(input$cpSeqInput)))
         regTreeFit <- fitTree(getCreatedTreeFormula(),"rpart",rpartGrid)
     })
     
+    #fit tree function used to build the trees and return the finally created tree
     fitTree <- function(formulaInput,treeMethod,grid) {
         controlTraining <- trainControl(method = "repeatedcv", number = 10)
         TreeFit <- train(form = formula(formulaInput), data = carData, method = treeMethod, trControl=controlTraining , preProcess = c("center", "scale"), tuneGrid = grid)
         return (TreeFit)
     }
     
+    #observe function updates the error string to inform the user if their formula is bad
     observe({updateTextInput(session, "custTreeModelText", value = custTreeModelError)})
     
+    #return the plot of the tree to the UI to be diplayed to the user
     output$regressionFullTreePlot <- renderPlot({
         tryCatch({
             tree <- rpart(formula(getCreatedTreeFormula()), data=carData, cp=as.double(input$cpSetInput))
@@ -306,6 +343,7 @@ shinyServer(function(input, output, session) {
         })
     })
     
+    #plot displays the complexity of CP in the regression tree
     output$regressionTreePlot <- renderPlot({
         tryCatch({
             plot(createCustomTreeModel())
@@ -315,8 +353,10 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    #boosted error string used to inform the user if their formula is bad
     boostedTreeModelError = ""
     
+    #event button used to created the boosted tree based on the user's inputs and tuning parameters
     createBoostedTreeModel <- eventReactive(input$boostedTreeButton, {
         boostedTreeModelError = ""
         gbmGrid <- expand.grid(interaction.depth = as.double(input$interactionFromInput):as.double(input$interactionToInput),
@@ -326,8 +366,10 @@ shinyServer(function(input, output, session) {
         boostedTreeFit <- fitTree(input$boostedFormulaInput,"gbm",gbmGrid)
     })
     
+    #observe function updates the UI to inform the user if their formula is bad
     observe({updateTextInput(session, "boostedTreeModelText", value = boostedTreeModelError)})
     
+    #plot is created of the tuning parameters used in the boosting tree method
     output$boostedTreePlot <- renderPlot({
         tryCatch({
             plot(createBoostedTreeModel())
@@ -337,8 +379,10 @@ shinyServer(function(input, output, session) {
         )
     })
     
+    #string used to inform the user if their prediction formula is bad
     predictionModelError = ""
     
+    #based on the user's input, the prediction formula is grabbed from either the tab windows
     getPredictionFormula <- function(){
         if(input$predictChooseDropDown == "Build model"){
             predictFormula = paste0("mpg ~ ",input$predict1DropDown,input$preSymb1DropDown,input$predict2DropDown,input$preSymb2DropDown,input$predict3DropDown)
@@ -348,6 +392,9 @@ shinyServer(function(input, output, session) {
         return(predictFormula)
     }
     
+    #main prediction function that splits the data into training and test
+    #performs a prediction on the model generated by the user
+    #and plots the comparison between the predicted and actual
     performPrediction <- function(){
         predictionModelError = ""
         train <- sample(1:nrow(carData), size = nrow(carData)*(1-(as.double(input$testAmountInput)/100)))
@@ -364,6 +411,7 @@ shinyServer(function(input, output, session) {
                col=c("red", "blue"), pch=21, cex=1)
     }
     
+    #final plot function used to display in the UI the predicted values in reference to the actual
     output$predictionPlot <- renderPlot({
         tryCatch({
             performPrediction()
@@ -372,6 +420,7 @@ shinyServer(function(input, output, session) {
         })
     })
     
+    #observe function used to inform the user if their formula is bad
     observe({updateTextInput(session, "predictionModelText", value = predictionModelError)})
 
 })
