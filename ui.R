@@ -80,7 +80,10 @@ dashboardPage(skin="green",
                                                   h4("In this application you can choose from a series of symbols that will format the equation of the predictors in the formula of each model in the model section. Below is a summary of what each symbol means:"),
                                                   h4("+ - an additional interaction of a predictor with the resposne. Example: cylinder + displacement would create a formula of mpg ~ cylinder + displacement"),
                                                   h4(": - an interaction between two predictors with the response. Example: cylinders:displacement would create a formula of mpg ~ cylinders*displacement"),
-                                                  h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of ", withMathJax(helpText('mpg ~ cylinders + $cylinders^2$')))),
+                                                  h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of mpg ~ ", withMathJax(helpText('$$cylinders + cylinders^2$$'))),
+                                                  withMathJax(),helpText('mpg ~ cylinders + $cylinders^2$'),
+                                                  withMathJax(helpText('$$cylinders + cylinders^2$$'))
+                                              ),
                                               box(background="red",width=12,
                                                   h4("Note: MathJax was used to creat the squared symbol above!"))
                                       )
