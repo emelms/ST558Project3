@@ -34,31 +34,31 @@ dashboardPage(skin="green",
                                    tabsetPanel(
                                      tabPanel("About this app!",
                                               #divided the description into 4 boxes so the text didn't look endless
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("This application is used to perform data analysis and statistical learning methods on the automobile MPG data set provided by ",a("UC Irvine Machine Learning", href="https://archive.ics.uci.edu/ml/datasets/Auto+MPG"), ". There are three sections to this application with each section having a series of tabs. 
                                                             ")
                                               ),
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("About section gives an overview of the dataset and column under the \"About Data\" and \"About Columns\" tabs."                                                              )
                                               ),
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("Data Exploration section allows for data analysis and summaries under the \"Data Summaries\" and \"Raw Data\" tabs. On the left hand side, the user can filter the type of data being displayed. In this section the user can also export any of the graphs or filtered data set. 
                                                             ")
                                               ),
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("Modeling section has \"Generalized Linear Models\" and \"Tree Model\" tabs that allow the user to explore different models for predicting the MPG of an autombile. The final tab \"Prediction\" allows the user to create a custom model for predicting MPG. 
                                                               ")
                                               )
                                      ),
                                      #description about where the data was located and the history of it
                                      tabPanel("About the data",
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("The data set auto-mpg, found ", a("here", href="https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/"), ", is a collection of 398 car observations that measure various components that may or may not impact the fuel milage of the vehicle. The data set was first used in 1983 that focused on various cars built between 1970 and 1982. The response for this data set is miles per gallon (or how much fuel conspution a vehcile uses in city driving) with eight predicors. Among these predictors, three are discrete while the other five are continuous. In the link earlier, there is the original data set but there were 8 unknown values in the MPG column so for our application will be using the modified version that is maintained by Carnegie Mellon University.")
                                               )
                                      ),
                                      #column descriptions and tranformation
                                      tabPanel("About the columns",
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("Below is a description of each column in the data set:"),
                                                   h4("MPG - measurement of how many miles per gallon a vehicle can achieve"),
                                                   h4("CYLINDERS - number of cylinders the engine contains; a common example is a V8 which has 8 cylinders"),
@@ -75,14 +75,13 @@ dashboardPage(skin="green",
                                                   h4("CAR MAKE - brand name of the vehicle")
                                               )#end of box
                                      ), #end of tab panel
+                                     #section discusses the different symbol options found in the model section
                                      tabPanel("About the symbols",
-                                              box(background="blue",width=12,
+                                              box(background="green",width=12,
                                                   h4("In this application you can choose from a series of symbols that will format the equation of the predictors in the formula of each model in the model section. Below is a summary of what each symbol means:"),
-                                                  h4("+ - an additional interaction of a predictor with the resposne. Example: cylinder + displacement would create a formula of mpg ~ cylinder + displacement"),
-                                                  h4(": - an interaction between two predictors with the response. Example: cylinders:displacement would create a formula of mpg ~ cylinders*displacement"),
-                                                  h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of mpg ~ ", withMathJax(helpText('$$cylinders + cylinders^2$$'))),
-                                                  withMathJax(),helpText('mpg ~ cylinders + $cylinders^2$'),
-                                                  withMathJax(helpText('$$cylinders + cylinders^2$$'))
+                                                  h4("+ - an additional interaction of a predictor with the resposne. Example: cylinder + displacement would create a formula of ", withMathJax(helpText('$$mpg \\sim cylinder + displacement$$'))),
+                                                  h4(": - an interaction between two predictors with the response. Example: cylinders:displacement would create a formula of ", withMathJax(helpText('$$mpg \\sim cylinders*displacement$$'))),
+                                                  h4("* - is all combinations between two predictors, essentially combining : and +. Example: cylinders*cylinders would create a formula of ", withMathJax(helpText('$$mpg \\sim cylinders + cylinders^2$$')))
                                               ),
                                               box(background="red",width=12,
                                                   h4("Note: MathJax was used to creat the squared symbol above!"))
