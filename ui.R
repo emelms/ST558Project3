@@ -10,6 +10,7 @@
 
 library(shiny)
 library(shinydashboard)
+library(collapsibleTree)
 
 #main dashboard
 dashboardPage(skin="green",
