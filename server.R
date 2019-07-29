@@ -252,6 +252,8 @@ shinyServer(function(input, output, session) {
                 css.summary = 'color: blue;'
             ))
             HTML(custModel$page.complete)
+        }, warning = function(w) {
+            custModelError = "Please input a valide formula"
         }, error=function(e) {
             custModelError = "Please input a valide formula"
         }
@@ -303,6 +305,8 @@ shinyServer(function(input, output, session) {
                 css.summary = 'color: blue;'
             ))
             HTML(compareModels$page.complete)
+        }, warning = function(w) {
+            compareModelError = "Please input a valide formula"
         }, error=function(e) {
             compareModelError = "Please input a valide formula"
         }
@@ -354,6 +358,10 @@ shinyServer(function(input, output, session) {
         tryCatch({
             tree <- rpart(formula(getCreatedTreeFormula()), data=carData, cp=as.double(input$cpSetInput))
             rpart.plot(tree, box.palette="RdBu", shadow.col="gray", nn=TRUE)
+        }, warning = function(w) {
+            custTreeModelError = "Please input a valide tree formula"
+        }, error=function(e) {
+            custTreeModelError = "Please input a valide tree formula"
         })
     })
     
@@ -361,6 +369,8 @@ shinyServer(function(input, output, session) {
     output$regressionTreePlot <- renderPlot({
         tryCatch({
             plot(createCustomTreeModel())
+        }, warning = function(w) {
+            custTreeModelError = "Please input a valide tree formula"
         }, error=function(e) {
             custTreeModelError = "Please input a valide tree formula"
         }
@@ -387,6 +397,8 @@ shinyServer(function(input, output, session) {
     output$boostedTreePlot <- renderPlot({
         tryCatch({
             plot(createBoostedTreeModel())
+        }, warning = function(w) {
+            boostedTreeModelError = "Please input a valide tree formula"
         }, error=function(e) {
             boostedTreeModelError = "Please input a valide tree formula"
         }
@@ -429,6 +441,8 @@ shinyServer(function(input, output, session) {
     output$predictionPlot <- renderPlot({
         tryCatch({
             performPrediction()
+        }, warning = function(w) {
+            predictionModelError = "Please input a valide formula"
         }, error = function(e) {
             predictionModelError = "Please input a valide formula"
         })
