@@ -10,6 +10,14 @@
 
 library(shiny)
 library(shinydashboard)
+library(tidyverse)
+library(ggiraphExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(caret)
+library(rpart)
+library(rpart.plot)
 library(collapsibleTree)
 
 #main dashboard
